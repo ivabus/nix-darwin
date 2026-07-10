@@ -1,0 +1,65 @@
+{
+	auto_https off
+}
+
+http://storage.private.ivabus.dev, http://хранилка.приват.маромаромаро.рф {
+	#root /Volumes/ZRAID/Media/Movies
+	root /Users/ivabus/storage.private.ivabus.dev
+	file_server browse
+	basic_auth {
+		user $2a$14$I1SMEei5PAlaDDhUN0QXZO7p1X8/lWF5.IAGbMR7vH6puZtPCQW0a
+		ivabus $2a$14$ZE3erxL5j5n6y01Mkajru.lvAMzsa4f1npLuR297mak6xfVkGi1g6
+	}
+}
+
+http://music.ivabus.dev {
+	reverse_proxy http://127.0.0.1:4533
+}
+
+http://trans.ivabus.dev, http://трансмишн.маромаромаро.рф {
+	reverse_proxy http://127.0.0.1:59091
+}
+
+http://:59091 {
+	reverse_proxy http://127.0.0.1:9091 {
+		header_down -Content-Security-Policy
+		header_down -X-Frame-Options
+	}
+}
+
+http://:54533 {
+	reverse_proxy http://127.0.0.1:4533 {
+		header_down -Content-Security-Policy
+		header_down -X-Frame-Options
+	}
+}
+
+http://:55001 {
+	reverse_proxy http://127.0.0.1:5001 {
+		header_down -Content-Security-Policy
+		header_down -X-Frame-Options
+	}
+}
+
+http://video.ivabus.dev {
+	reverse_proxy http://127.0.0.1:8096
+}
+
+http://git.ivabus.dev {
+	reverse_proxy https://openrouter.ai {
+		header_up -Host
+	}
+}
+
+http://:99 {
+	#root /Volumes/ZRAID/Media/Movies
+	root /Users/ivabus/storage.private.ivabus.dev
+	file_server browse
+}
+
+http://storage.ivabus.dev, http://хранилка.маромаромаро.рф {
+	#//reverse_proxy unix///Users/ivabus/party.sock
+	root /Users/ivabus/storage.ivabus.dev
+	file_server
+}
+
