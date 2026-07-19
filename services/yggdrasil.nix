@@ -11,6 +11,10 @@ in
 {
   options.services.yggdrasil = {
     enable = lib.mkEnableOption "Enable yggdrasil";
+    config = lib.mkOption {
+      type = lib.types.str;
+      description = "Raw yggdrasil config";
+    };
   };
 
   config = lib.mkIf (cfg.enable) {
@@ -20,7 +24,7 @@ in
           #!${pkgs.runtimeShell}
           # preparing directory for socket
           mkdir -p /var/run/yggdrasil/ || true
-          ${pkgs.yggdrasil}/bin/yggdrasil -useconffile /etc/yggdrasil.conf
+          ${pkgs.yggdrasil}/bin/yggdrasil -useconffile ${pkgs.writeText "yggdrasil.conf" cfg.config}
         ''}/bin/yggdrasil-launcher";
 
         serviceConfig = {

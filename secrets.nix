@@ -9,4 +9,5 @@ else
   {
     erai-raws-token = builtins.readFile ./secrets/erai-raws-token;
     hosts = import ./secrets/hosts.nix;
+    yggdrasil = import ./secrets/yggdrasil.nix;
   }

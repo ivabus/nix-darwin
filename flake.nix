@@ -4,18 +4,20 @@
   inputs = {
     # pinning everything here instead of flake.lock.
     #nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixpkgs.url = "github:NixOS/nixpkgs/f205b5574fd0cb7da5b702a2da51507b7f4fdd1b";
+    #nixpkgs.url = "github:NixOS/nixpkgs/f205b5574fd0cb7da5b702a2da51507b7f4fdd1b";
+    nixpkgs.url = "github:NixOS/nixpkgs/20535e48e12c86043b577b8518234ff5dbb26957";
 
     #nix-darwin.url = "github:nix-darwin/nix-darwin/master";
-    nix-darwin.url = "github:nix-darwin/nix-darwin/d5bd9cd77aea4c0a8f49e7fd85545671a208ed15";
+    #nix-darwin.url = "github:nix-darwin/nix-darwin/d5bd9cd77aea4c0a8f49e7fd85545671a208ed15";
+    nix-darwin.url = "github:nix-darwin/nix-darwin/b4cccbd4bc299c1f71ae185b79c3cf99aa82805c";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     #nix-homebrew.url = "github:zhaofengli/nix-homebrew";
-    nix-homebrew.url = "github:zhaofengli/nix-homebrew/de7953a08ed4bb9245be043e468561c17b89130d";
+    nix-homebrew.url = "github:zhaofengli/nix-homebrew/842eeb863ecca0eeb463f7a814cdc51e1d925776";
 
     #rust-overlay.url = "github:oxalica/rust-overlay";
-    rust-overlay.url = "github:oxalica/rust-overlay/e598b37857b895b81020a65a802ef55f5bbed72f";
-    rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
+    # rust-overlay.url = "github:oxalica/rust-overlay/e598b37857b895b81020a65a802ef55f5bbed72f";
+    # rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
@@ -33,7 +35,7 @@
       nix-darwin,
       nixpkgs,
       nix-homebrew,
-      rust-overlay,
+      # rust-overlay,
       homebrew-core,
       homebrew-cask,
       ...

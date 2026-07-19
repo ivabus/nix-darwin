@@ -6,18 +6,33 @@
 }:
 
 let
+  # query_from_attr =
+  #   attr:
+  #   "?${
+  #     builtins.concatStringsSep "&" (
+  #       lib.mapAttrsToList (
+  #         key: value:
+  #         if builtins.typeOf value == "list" then
+  #           builtins.concatStringsSep "&" (map (x: "${key}[]=${x}") value)
+  #         else
+  #           "${key}=${value}"
+  #       ) (lib.filterAttrs (k: v: v != null) attr)
+  #     )
+  #   }";
+
   query_from_attr =
     attr:
     "?${
-      builtins.concatStringsSep "&" (
-        lib.mapAttrsToList (
-          key: value:
-          if builtins.typeOf value == "list" then
-            builtins.concatStringsSep "&" (map (x: "${key}[]=${x}") value)
-          else
-            "${key}=${value}"
-        ) (lib.filterAttrs (k: v: v != null) attr)
+      attr
+      |> lib.filterAttrs (k: v: v != null)
+      |> lib.mapAttrsToList (
+        key: value:
+        if builtins.typeOf value == "list" then
+          value |> map (x: "${key}[]=${x}") |> builtins.concatStringsSep "&"
+        else
+          "${key}=${value}"
       )
+      |> builtins.concatStringsSep "&"
     }";
   cfg = config.services.erai-proxy;
 in

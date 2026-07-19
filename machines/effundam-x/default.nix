@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  config,
   secrets,
   ...
 }:
@@ -135,13 +136,16 @@ in
   ];
   nixpkgs.config.allowUnsupportedSystem = true;
 
-  launchd.daemons = lib.mkMerge (map daemon web_daemons);
+  launchd.daemons = lib.mkMerge (web_daemons |> map daemon);
 
-  services.yggdrasil.enable = true;
+  services.yggdrasil = {
+    enable = true;
+    config = secrets.yggdrasil."${config.networking.hostName}";
+  };
 
   services.caddy-darwin = {
     enable = true;
-    raw_parts = base_caddy_config ++ (map web_daemon_to_caddy web_daemons);
+    raw_parts = base_caddy_config ++ (web_daemons |> map web_daemon_to_caddy);
   };
 
   services.erai-proxy = {
@@ -155,7 +159,7 @@ in
 
   nix = {
     extraOptions = ''
-      experimental-features = nix-command flakes
+      experimental-features = nix-command flakes pipe-operators
     '';
     settings = {
       sandbox = "relaxed";

@@ -1,5 +1,6 @@
 {
   pkgs,
+  config,
   secrets,
   ...
 }:
@@ -18,6 +19,10 @@ in
     localHostName = "celerrime-x";
   };
 
+  security.pam.services.sudo_local = {
+    touchIdAuth = true;
+  };
+
   environment.systemPackages = with pkgs; [
     (mpv-unwrapped.override {
       libbluray = libbluray.override {
@@ -25,11 +30,18 @@ in
         withBDplus = true;
       };
     })
+
+    vlc-bin-universal
+
+    pi-coding-agent
+
+    xld
+
     nixfmt
     nil
     cmake
     nixd
-    cargo
+    # cargo
     aria2
     fastfetch
     imagemagick
@@ -42,6 +54,7 @@ in
     n-m3u8dl-re
     ffmpeg
     vgmstream
+    go-chromecast
 
     python3Packages.jupytext
 
@@ -52,7 +65,10 @@ in
     yggdrasil
   ];
 
-  services.yggdrasil.enable = true;
+  services.yggdrasil = {
+    enable = true;
+    config = secrets.yggdrasil."${config.networking.hostName}";
+  };
 
   services.dnsmasq = {
     enable = true;
@@ -66,9 +82,10 @@ in
   };
   nix = {
     extraOptions = ''
-      experimental-features = nix-command flakes
+      experimental-features = nix-command flakes pipe-operators
     '';
     settings = {
+      auto-optimise-store = true;
       sandbox = "relaxed";
       trusted-users = [
         "root"

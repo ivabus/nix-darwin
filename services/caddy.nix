@@ -11,7 +11,7 @@ let
     parts:
     pkgs.writeTextFile {
       name = "Caddyfile";
-      text = builtins.concatStringsSep "\n" (builtins.filter (x: x != "") parts);
+      text = parts |> builtins.filter (x: x != "") |> builtins.concatStringsSep "\n";
     };
 in
 {
