@@ -5,9 +5,11 @@ on:
     branches:
       - master
   workflow_dispatch:
+  schedule:
+  - cron: '0 3 * * *' # nightly (literally) prepopulating cache to use during day
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -30,6 +32,8 @@ jobs:
           attic login github-actions "$ATTIC_SERVER" "$ATTIC_TOKEN"
           attic use "$ATTIC_CACHE"
           attic use rustversebot
+      - name: Update flake.lock # not pushing, recursion otherwise
+        run: nix flake update
       - parallel:
           - name: Build celerrime-x
             run: |
@@ -38,4 +42,9 @@ jobs:
             run: |
               nix --extra-experimental-features pipe-operators build 'path:.#darwinConfigurations.effundam-x.system' --out-link effundam-x
       - name: Push to binary cache
-        run: attic push --ignore-upstream-cache-filter -j8 "$ATTIC_CACHE" ./effundam-x ./celerrime-x
+        run: attic push --ignore-upstream-cache-filter -j2 "$ATTIC_CACHE" ./effundam-x ./celerrime-x
+      - name: Upload artifact to GitHub
+        uses: actions/upload-artifact@v7
+        with:
+          name: flake.lock
+          path: flake.lock

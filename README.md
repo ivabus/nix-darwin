@@ -6,9 +6,13 @@ No plans to add NixOS for now (all hosts are pretty much dead by now).
 
 No plans on integrating home-manager for now.
 
-### Updating `inputs.nixpkgs`
+### "Nightly" updates
 
-I prefer to pin nixpkgs to a commit to avoid long rebuilds on unpleasant networks.
+Every night, at 00:00 GMT+3 I'm updating flake.lock and prebuilding all dependencies for both machines and prepopulating my selfhosted binary cache with them.
+
+By doing that I'm solving two problems at once:
+- slow rebuilds on big nixpkgs overlays
+- slow downloads from `cache.nixos.org` on bad networks, that limit the connection speed
 
 ### Secrets
 
