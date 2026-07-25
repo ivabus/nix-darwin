@@ -90,6 +90,7 @@ in
     settings = {
       auto-optimise-store = true;
       # access-tokens = [ "github.com=${secrets.github-token}" ];
+      sandbox = "relaxed";
 
       extra-substituters = [
         "https://attic.ivabus.dev/rustversebot?priority=20"
@@ -100,7 +101,12 @@ in
         "rustversebot:4OwNX9gIkMqvdPUqf6p5s2XnJZAgwe0QXiuTspTE52I="
         "darwin:IlyzS2u4MPxVscdFeI6xiPcgzsWl8INjXs6LBawg44A="
       ];
-      sandbox = "relaxed";
+
+      netrc-file = pkgs.writeText "attic-netrc" ''
+        machine attic.ivabus.dev
+        password ${secrets.attic-key}
+      '';
+
       trusted-users = [
         "root"
         "ivabus"
