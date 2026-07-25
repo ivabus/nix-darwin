@@ -35,6 +35,8 @@ in
 
     pi-coding-agent
 
+    nodejs
+
     xld
 
     nixfmt
@@ -59,6 +61,7 @@ in
     python3Packages.jupytext
 
     uv
+    bun
 
     (pkgs.callPackage ../../pkgs/yt-dlp-rolling.nix { })
 
@@ -86,6 +89,17 @@ in
     '';
     settings = {
       auto-optimise-store = true;
+      # access-tokens = [ "github.com=${secrets.github-token}" ];
+
+      extra-substituters = [
+        "https://attic.ivabus.dev/rustversebot?priority=20"
+        "https://attic.ivabus.dev/darwin?priority=10"
+      ];
+
+      extra-trusted-public-keys = [
+        "rustversebot:4OwNX9gIkMqvdPUqf6p5s2XnJZAgwe0QXiuTspTE52I="
+        "darwin:IlyzS2u4MPxVscdFeI6xiPcgzsWl8INjXs6LBawg44A="
+      ];
       sandbox = "relaxed";
       trusted-users = [
         "root"

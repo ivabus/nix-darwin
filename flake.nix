@@ -19,14 +19,7 @@
     # rust-overlay.url = "github:oxalica/rust-overlay/e598b37857b895b81020a65a802ef55f5bbed72f";
     # rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
-    homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
-      flake = false;
-    };
+    rustversebot.url = "github:ivabus/rustversebot";
   };
 
   outputs =
@@ -35,9 +28,8 @@
       nix-darwin,
       nixpkgs,
       nix-homebrew,
+      rustversebot,
       # rust-overlay,
-      homebrew-core,
-      homebrew-cask,
       ...
     }:
     {

@@ -22,18 +22,26 @@ let
 
   query_from_attr =
     attr:
-    "?${
-      attr
-      |> lib.filterAttrs (k: v: v != null)
-      |> lib.mapAttrsToList (
-        key: value:
-        if builtins.typeOf value == "list" then
-          value |> map (x: "${key}[]=${x}") |> builtins.concatStringsSep "&"
-        else
-          "${key}=${value}"
-      )
-      |> builtins.concatStringsSep "&"
-    }";
+    let
+      toStr = val: if builtins.isBool val then if val then "true" else "false" else toString val;
+      query = "?${
+        attr
+        |> lib.filterAttrs (k: v: v != null)
+        |> lib.filterAttrs (k: v: if builtins.typeOf v == "list" then v != [ ] else true)
+        |> lib.mapAttrsToList (
+          key: value:
+          if builtins.typeOf value == "list" then
+            value
+            |> map (x: "${lib.strings.escapeURL key}[]=${lib.strings.escapeURL (toStr x)}")
+            |> builtins.concatStringsSep "&"
+          else
+            "${lib.strings.escapeURL key}=${lib.strings.escapeURL (toStr value)}"
+        )
+        |> builtins.filter (x: x != "")
+        |> builtins.concatStringsSep "&"
+      }";
+    in
+    if query != "?" then query else throw "no args in query";
   cfg = config.services.erai-proxy;
 in
 {

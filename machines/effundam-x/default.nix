@@ -3,6 +3,7 @@
   lib,
   config,
   secrets,
+  rustversebot,
   ...
 }:
 let
@@ -29,7 +30,6 @@ let
       expose = false;
       unprivileged = true;
     }
-
     {
       name = "flaresolverr";
       # command = "/Users/ivabus/Flaresolverr/.venv/bin/python src/flaresolverr.py";
@@ -38,6 +38,33 @@ let
       unprivileged = true;
       expose = false;
       workingDirectory = "/Users/ivabus/Flaresolverr";
+    }
+
+    {
+      name = "attic";
+      command = "${pkgs.attic-server}/bin/atticd --config ${pkgs.writeText "atticd.toml" secrets.atticd}";
+      expose = true;
+      unprivileged = true;
+      port = 7648;
+      workingDirectory = "/Users/ivabus/";
+    }
+
+    {
+      name = "rustversebot";
+      command = "${
+        rustversebot.packages.${pkgs.stdenv.hostPlatform.system}.rustversebot
+      }/bin/rustversebot";
+      # command = "/Users/ivabus/rustversebot";
+      environment = {
+        TELOXIDE_TOKEN = secrets.teloxide-token;
+        BOT_ADMIN_ID = "421488552";
+        BOT_CONFIG_PATH = "/Users/ivabus/config.toml";
+        BOT_WEB_BIND = "0.0.0.0:11234";
+        TURSO_DATABASE_URL = "file:rustversebot.db";
+      };
+      unprivileged = true;
+      expose = false;
+      workingDirectory = "/Users/ivabus/";
     }
 
     {
@@ -163,6 +190,23 @@ in
     '';
     settings = {
       sandbox = "relaxed";
+      # access-tokens = [ "github.com=${secrets.github-token}" ];
+
+      extra-substituters = [
+        "https://attic.ivabus.dev/rustversebot?priority=20"
+        "https://attic.ivabus.dev/darwin?priority=10"
+      ];
+
+      extra-trusted-public-keys = [
+        "rustversebot:4OwNX9gIkMqvdPUqf6p5s2XnJZAgwe0QXiuTspTE52I="
+        "darwin:IlyzS2u4MPxVscdFeI6xiPcgzsWl8INjXs6LBawg44A="
+      ];
+
+      netrc-file = pkgs.writeText "attic-netrc" ''
+        machine attic.ivabus.dev
+        password ${secrets.attic-key}
+      '';
+
       trusted-users = [
         "root"
         "ivabus"

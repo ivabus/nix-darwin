@@ -1,0 +1,41 @@
+name: Populate binary cache with pre-built secretless systems
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and cache
+    runs-on: macos-26
+    environment: Actions
+    env:
+      ATTIC_CACHE: darwin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/determinate-nix-action@v3
+      - name: Configure Attic cache
+        env:
+          ATTIC_SERVER: ${{ secrets.ATTIC_SERVER }}
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+        run: |
+          : "${ATTIC_SERVER:?ATTIC_SERVER secret is required}"
+          : "${ATTIC_TOKEN:?ATTIC_TOKEN secret is required}"
+          nix profile add nixpkgs#attic-client
+          attic login github-actions "$ATTIC_SERVER" "$ATTIC_TOKEN"
+          attic use "$ATTIC_CACHE"
+          attic use rustversebot
+      - parallel:
+          - name: Build celerrime-x
+            run: |
+              nix --extra-experimental-features pipe-operators build 'path:.#darwinConfigurations.celerrime-x.system' --out-link celerrime-x
+          - name: Build effundam-x
+            run: |
+              nix --extra-experimental-features pipe-operators build 'path:.#darwinConfigurations.effundam-x.system' --out-link effundam-x
+      - name: Push to binary cache
+        run: attic push --ignore-upstream-cache-filter -j8 "$ATTIC_CACHE" ./effundam-x ./celerrime-x

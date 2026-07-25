@@ -52,6 +52,8 @@ in
       go
       wrk
       cloc
+      fswatch
+      nurl
       # python314Packages.ipykernel
       # python314Packages.torch
       # python314Packages.numpy
