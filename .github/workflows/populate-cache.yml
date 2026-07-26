@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
   schedule:
   - cron: '0 3 * * *' # nightly (literally) prepopulating cache to use during day
+    timezone: "Europe/Moscow"
 
 permissions:
   contents: write
