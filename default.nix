@@ -3,6 +3,7 @@ rec {
   roles = import ./roles;
   services = import ./services;
   secrets = import ./secrets.nix;
+  helpers = import ./helpers;
 
   modules =
     { ... }:

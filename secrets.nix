@@ -14,16 +14,17 @@ if (canaryHash != expectedHash) then
         "effundam-x" = "";
         "celerrime-x" = "";
       };
-      atticd = "";
+      attic = {
+        access-key = "";
+        conf = "";
+      };
       teloxide-token = "";
-      attic-key = "";
     }
 else
   {
     erai-raws-token = builtins.readFile ./secrets/erai-raws-token;
     hosts = import ./secrets/hosts.nix;
     yggdrasil = import ./secrets/yggdrasil.nix;
-    atticd = builtins.readFile ./secrets/atticd.toml;
     teloxide-token = builtins.readFile ./secrets/teloxide-token;
-    attic-key = builtins.readFile ./secrets/attic-key;
+    attic = import ./secrets/attic.nix;
   }
