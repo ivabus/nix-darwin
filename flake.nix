@@ -41,6 +41,7 @@
           (
             { ... }:
             {
+              system.primaryUser = "ivabus";
               environment.etc."nix/nix.custom.conf".text = ''
                 nix-path = nixpkgs=flake:nixpkgs
               '';

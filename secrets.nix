@@ -1,4 +1,4 @@
-{ ... }:
+ { ... }:
 let
   canaryHash = builtins.hashFile "sha256" ./secrets/canary;
   expectedHash = "ee66df1685f1a1fc980ca47aca2e7262de892c2e7aabdbaa62da952c4bbc48bf";

@@ -33,6 +33,7 @@ in
       #     "wasm32-unknown-unknown"
       #   ];
       # })
+      deno
       rustup
       clang
       llvm

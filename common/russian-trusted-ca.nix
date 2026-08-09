@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 let
   # Maybe I should rebase them to my own trusted location one day
@@ -12,8 +12,41 @@ let
   };
 in
 {
-  security.pki.certificateFiles = [
-    "${root_ca}"
-    "${sub_ca}"
-  ];
+
+  system.activationScripts.postActivation.text =
+    if config.networking.hostName != "effundam-x" then
+      ''
+        if ! /usr/bin/security verify-cert \
+          -k /Library/Keychains/System.keychain \
+          -c ${root_ca} >/dev/null 2>&1
+        then
+          echo "Installing trusted root CA..."
+
+          /usr/bin/security add-trusted-cert \
+            -d \
+            -r trustRoot \
+            -k /Library/Keychains/System.keychain \
+            ${root_ca}
+        fi
+
+        if ! /usr/bin/security verify-cert \
+          -k /Library/Keychains/System.keychain \
+          -c ${sub_ca} >/dev/null 2>&1
+        then
+          echo "Installing trusted root CA..."
+
+          /usr/bin/security add-trusted-cert \
+            -d \
+            -r trustRoot \
+            -k /Library/Keychains/System.keychain \
+            ${sub_ca}
+        fi
+      ''
+    else
+      "";
+
+  # security.pki.certificateFiles = [
+  # "${root_ca}"
+  # "${sub_ca}"
+  # ];
 }
